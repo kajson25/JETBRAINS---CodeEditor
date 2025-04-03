@@ -10,24 +10,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ui.helpers.ScriptLang
 
 @Composable
 fun TopBar(
     isDark: Boolean,
     onToggleTheme: () -> Unit,
+    lang: ScriptLang,
+    onToggleLang: () -> Unit,
 ) {
     Row(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
+        modifier = Modifier.fillMaxWidth().padding(8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         Text("Kotlin Script Runner", fontSize = 18.sp)
-        Text(
-            text = if (isDark) "🌙 Dark" else "🌞 Light",
-            fontSize = 14.sp,
-            modifier = Modifier.clickable { onToggleTheme() },
-        )
+        Row {
+            Text(
+                text = if (lang == ScriptLang.KOTLIN) "🟦 Kotlin" else "🟥 Swift",
+                modifier = Modifier.clickable { onToggleLang() }.padding(horizontal = 8.dp),
+            )
+            Text(
+                text = if (isDark) "🌙" else "🌞",
+                modifier = Modifier.clickable { onToggleTheme() },
+            )
+        }
     }
 }

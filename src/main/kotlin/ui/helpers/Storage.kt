@@ -24,51 +24,7 @@ val kotlinKeywords =
         "while(",
     )
 
-fun highlightCodeWithBrackets(
-    code: String,
-    keywords: List<String>,
-    cursor: Int,
-): AnnotatedString {
-    val builder = AnnotatedString.Builder()
-
-    val pairs = mapOf('(' to ')', '{' to '}', '[' to ']')
-    val openBrackets = pairs.keys
-    val closeBrackets = pairs.values.toSet()
-
-    var matchIndex: Int? = null
-
-    // Detect cursor is next to a bracket
-    val currentChar = code.getOrNull(cursor)
-    val prevChar = code.getOrNull(cursor - 1)
-
-    if (currentChar in openBrackets) {
-        matchIndex = findMatchingBracket(code, cursor, currentChar!!, pairs[currentChar]!!)
-    } else if (prevChar in closeBrackets) {
-        val open = pairs.entries.find { it.value == prevChar }!!.key
-        matchIndex = findMatchingBracket(code, cursor - 1, prevChar!!, open, backwards = true)
-    }
-
-    code.forEachIndexed { i, c ->
-        val token = c.toString()
-        val isKeywordStart = i == 0 || !code[i - 1].isLetterOrDigit()
-
-        when {
-            i == matchIndex || i == cursor || i == (cursor - 1) -> {
-                builder.pushStyle(SpanStyle(color = Color.Magenta, fontWeight = FontWeight.Bold))
-                builder.append(token)
-                builder.pop()
-            }
-            keywords.any { it == token } && isKeywordStart -> {
-                builder.pushStyle(SpanStyle(color = Color(0xFF007ACC)))
-                builder.append(token)
-                builder.pop()
-            }
-            else -> builder.append(token)
-        }
-    }
-
-    return builder.toAnnotatedString()
-}
+enum class ScriptLang { KOTLIN, SWIFT }
 
 fun findMatchingBracket(
     code: String,

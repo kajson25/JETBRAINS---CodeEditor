@@ -9,12 +9,14 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import ui.helpers.ScriptLang
 import java.io.File
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
 fun ScriptRunner(
     code: String,
+    lang: ScriptLang,
     onBeforeRun: () -> Unit,
     onAppendOutputLine: (String) -> Unit,
     onRunningStateChange: (Boolean) -> Unit,
@@ -29,15 +31,18 @@ fun ScriptRunner(
             isRunning = true
             onRunningStateChange(true)
 
-            val scriptFile = File("temp.kts")
+            val extension = if (lang == ScriptLang.KOTLIN) "kts" else "swift"
+            val scriptFile = File("temp.$extension")
             scriptFile.writeText(code)
 
-            val process =
-                ProcessBuilder(
-                    "kotlin-compiler-2.1.20/kotlinc/bin/kotlinc.bat",
-                    "-script",
-                    scriptFile.absolutePath,
-                ).redirectErrorStream(true).start()
+            val processBuilder =
+                if (lang == ScriptLang.KOTLIN) {
+                    ProcessBuilder("kotlin-compiler-2.1.20/kotlinc/bin/kotlinc.bat", "-script", scriptFile.absolutePath)
+                } else {
+                    ProcessBuilder("/usr/bin/env", "swift", scriptFile.absolutePath)
+                }
+
+            val process = processBuilder.redirectErrorStream(true).start()
 
             val reader = process.inputStream.bufferedReader()
             Thread {
