@@ -1,5 +1,7 @@
 @file:Suppress("ktlint:standard:no-wildcard-imports")
 
+package ui.components
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,10 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinKeywords
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -39,27 +43,25 @@ fun CodeEditor(
     ) {
         Row {
             // Line numbers
-            Column(
-                modifier = Modifier.padding(end = 8.dp),
-            ) {
+            Column(modifier = Modifier.padding(end = 8.dp)) {
                 lines.forEachIndexed { i, _ ->
-                    val isHighlighted = (i + 1) == highlightLine
-                    val bgColor = if (isHighlighted) Color(0xFFFFE082) else Color.Transparent
+                    val isHighlighted = i == highlightLine
+                    val bg = if (isHighlighted) Color(0xFFFFE082) else Color.Transparent
                     Text(
                         text = "${i + 1}".padStart(3),
                         color = Color.Gray,
                         fontSize = 14.sp,
                         modifier =
                             Modifier
-                                .background(bgColor)
+                                .background(bg)
                                 .padding(vertical = 2.dp)
                                 .width(40.dp),
                     )
                 }
             }
 
-            // Highlighted + Real Input Overlay
-            Box(modifier = Modifier.fillMaxWidth()) {
+            // Overlay: highlighted + editable field
+            Box {
                 Text(
                     text = highlightedText,
                     fontSize = 14.sp,
@@ -68,12 +70,30 @@ fun CodeEditor(
                 BasicTextField(
                     value = codeState,
                     onValueChange = onCodeChange,
-                    modifier =
-                        Modifier
-                            .fillMaxWidth(),
                     textStyle = TextStyle(fontSize = 14.sp, color = Color.Transparent),
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }
     }
+}
+
+fun highlightCode(
+    code: String,
+    keywords: List<String>,
+): AnnotatedString {
+    val builder = AnnotatedString.Builder()
+    val words = code.split(Regex("(?<=\\s)|(?=\\s)")) // split but keep spaces
+
+    for (word in words) {
+        if (keywords.contains(word.trim())) {
+            builder.pushStyle(SpanStyle(color = Color(0xFF007ACC))) // Blue
+            builder.append(word)
+            builder.pop()
+        } else {
+            builder.append(word)
+        }
+    }
+
+    return builder.toAnnotatedString()
 }
