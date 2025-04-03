@@ -11,12 +11,12 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.*
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinKeywords
+import ui.helpers.highlightCode
+import ui.helpers.kotlinKeywords
 
 @Suppress("ktlint:standard:function-naming")
 @Composable
@@ -24,20 +24,30 @@ fun CodeEditor(
     codeState: TextFieldValue,
     onCodeChange: (TextFieldValue) -> Unit,
     highlightLine: Int?,
+    searchHighlights: List<Int> = emptyList(),
+    backgroundColor: Color,
+    textColor: Color,
+    highlightColor: Color,
 ) {
     val scrollState = rememberScrollState()
     val lines = codeState.text.split("\n")
 
     val highlightedText =
-        remember(codeState.text) {
-            highlightCode(codeState.text, kotlinKeywords)
+        remember(codeState.text, codeState.selection, searchHighlights) {
+            highlightCode(
+                code = codeState.text,
+                keywords = kotlinKeywords,
+                cursor = codeState.selection.start,
+                highlightRanges = searchHighlights,
+                highlightColor = highlightColor,
+            )
         }
 
     Box(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(Color(0xFFF2F2F2))
+                .background(backgroundColor)
                 .padding(8.dp)
                 .verticalScroll(scrollState),
     ) {
@@ -65,7 +75,7 @@ fun CodeEditor(
                 Text(
                     text = highlightedText,
                     fontSize = 14.sp,
-                    color = Color.Black,
+                    color = textColor,
                 )
                 BasicTextField(
                     value = codeState,
@@ -76,24 +86,4 @@ fun CodeEditor(
             }
         }
     }
-}
-
-fun highlightCode(
-    code: String,
-    keywords: List<String>,
-): AnnotatedString {
-    val builder = AnnotatedString.Builder()
-    val words = code.split(Regex("(?<=\\s)|(?=\\s)")) // split but keep spaces
-
-    for (word in words) {
-        if (keywords.contains(word.trim())) {
-            builder.pushStyle(SpanStyle(color = Color(0xFF007ACC))) // Blue
-            builder.append(word)
-            builder.pop()
-        } else {
-            builder.append(word)
-        }
-    }
-
-    return builder.toAnnotatedString()
 }
