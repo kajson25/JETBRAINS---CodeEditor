@@ -8,7 +8,7 @@ A minimal yet powerful desktop editor for executing Kotlin and Swift scripts —
 
 Check out the full walkthrough of the app:
 
-▶️ [Watch on Google Drive]([https://drive.google.com/file/d/xyz123456789/view](https://drive.google.com/file/d/1-Wl5PAibp0LywCrDGsXTCzK_9dCXG-iq/view?usp=sharing))
+▶️ [Watch on Google Drive]([https://drive.google.com/file/d/1-Wl5PAibp0LywCrDGsXTCzK_9dCXG-iq/view?usp=drive_link])
 
 ## ✨ Features
 
