@@ -64,7 +64,6 @@ fun CodeEditor(
                         modifier =
                             Modifier
                                 .background(bg)
-                                .padding(vertical = 2.dp)
                                 .width(40.dp),
                     )
                 }
