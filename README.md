@@ -4,6 +4,12 @@ A minimal yet powerful desktop editor for executing Kotlin and Swift scripts —
 
 ---
 
+## 🎥 Demo Video
+
+Check out the full walkthrough of the app:
+
+▶️ [Watch on Google Drive]([https://drive.google.com/file/d/xyz123456789/view](https://drive.google.com/file/d/1-Wl5PAibp0LywCrDGsXTCzK_9dCXG-iq/view?usp=sharing))
+
 ## ✨ Features
 
 - ✅ Script execution (`kotlinc -script` for Kotlin, `/usr/bin/env swift` for Swift)
